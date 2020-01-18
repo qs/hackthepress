@@ -12,7 +12,6 @@
 $(document).ready(function() {
     var panel = document.createElement('div');
     panel.className = 'panel';
-    panel.innerHTML = '<h2>TODO</h2><p>Add meaningful content</p>';
 
     var arrow = document.createElement('a');
     arrow.href = 'javascript:void(0);'
@@ -47,3 +46,149 @@ $(function(){
     });
 
 });
+
+
+    function httpGetAsync(theUrl, callback) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+        xmlHttp.send(null);
+    }
+    var apiurl = "https://related-news-extension-api.herokuapp.com/?q=https://www.theguardian.com/politics/2020/jan/18/long-bailey-we-must-become-salespeople-for-socialism"
+
+    function loopArticles(responseText) {
+        var relatedArticles = JSON.parse(responseText);
+        console.log(relatedArticles);
+        for (var i = 0; i < relatedArticles.length; i++) {
+          console.log(relatedArticles[i]);
+          var sidebarPanel = document.getElementsByClassName("panel")[0];
+          var div = document.createElement("div");
+          div.innerHTML = `
+            <div class="article-container">
+                <div class="article-data-left">
+                    <div class="source article-meta">
+                        <p>From <span class="publication">${relatedArticles[i].source.name}</span></p>
+                    </div>
+                    <div class="article-title">
+                        <!-- Need to limit the number of characters in the headline -->
+                        <p class="article-title-text">${relatedArticles[i].title}</p>
+                    </div>
+                    <div class="article-date article-meta">
+                        <p>${relatedArticles[i].publishedAt} hours ago //TODO</p>
+                    </div>
+                </div>
+                <div class="article-image-right">
+                    <img src="${relatedArticles[i].urlToImage}" alt="">
+                </div>
+            </div>`
+          sidebarPanel.appendChild(div);
+        }
+    }
+    var relatedArticles = httpGetAsync(apiurl, loopArticles);
+
+
+
+
+    var style=document.createElement('style');
+    style.type='text/css';
+    if(style.styleSheet){
+        style.styleSheet.cssText=`
+      .wrapper {
+        width: 400px;
+        margin: auto;
+        padding-top: 5px;
+        background: #eee;
+        height: 100vh;
+    }
+    .article-container {
+        height: 130px;
+        background-color: white;
+        margin: 5px;
+        border-radius: 5px;
+        -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+        -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+        font-family: "Merriweather Sans", sans-serif;
+        overflow: hidden;
+    }
+    .article-container p {
+        margin: 0.5em;
+    }
+    .article-meta {
+        font-size: 0.8em;
+        opacity: 0.7;
+    }
+    .article-data-left {
+        width: calc(70% - 10px);
+        float: left;
+        padding: 5px;
+    }
+    .article-title {
+        font-weight: bold;
+    }
+
+    .article-image-right {
+        width: 30%;
+        height: 100%;
+        float: left;
+        overflow: hidden;
+    }
+    .article-image-right > img {
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 50%; /* JMTODO: Make this work */
+    }
+    `;
+    }else{
+        style.appendChild(document.createTextNode(`
+        .wrapper {
+            width: 400px;
+            margin: auto;
+            padding-top: 5px;
+            background: #eee;
+            height: 100vh;
+        }
+        .article-container {
+            height: 130px;
+            background-color: white;
+            margin: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+            -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+            font-family: "Merriweather Sans", sans-serif;
+            overflow: hidden;
+        }
+        .article-container p {
+            margin: 0.5em;
+        }
+        .article-meta {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+        .article-data-left {
+            width: calc(70% - 10px);
+            float: left;
+            padding: 5px;
+        }
+        .article-title {
+            font-weight: bold;
+        }
+
+        .article-image-right {
+            width: 30%;
+            height: 100%;
+            float: left;
+            overflow: hidden;
+        }
+        .article-image-right > img {
+            height: 100%;
+            object-fit: cover;
+            object-position: 50% 50%; /* JMTODO: Make this work */
+        }
+        `));
+    }
+    document.getElementsByTagName('head')[0].appendChild(style);
