@@ -69,7 +69,7 @@ $(document).ready(function() {
         }
     }
 
-    var apiurl = `https://related-news-extension-api.herokuapp.com/?q=$ {window.location.href}`
+    var apiurl = `https://related-news-extension-api.herokuapp.com/?q=${window.location.href}`
     httpGetAsync(apiurl, loopArticles);
 
 
