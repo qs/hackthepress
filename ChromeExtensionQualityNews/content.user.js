@@ -64,11 +64,13 @@ $(function(){
         var sidebarPanel = document.getElementsByClassName("newsextensionSidebarPanel")[0];
         var sidebarPanelTopContent = document.createElement("div");
         sidebarPanelTopContent.innerHTML = `
-        <div class="news-extension-sidebar-panel-top-text">
+        <div class="news-extension-sidebar-panel-top-text card-container">
             <p>The article you're reading has <br/><span style="//background-color: #e67e22;"> ${relatedArticles.warnings} quality warnings</span><br/> according to Glitched.News</p>
-            <p><a style="text-decoration: underline; font-weight: 500;" href="${relatedArticles.analysis}">See a full analysis here.</a></p>
+            <p><a target="_blank" style="text-decoration: underline; font-weight: 500;" href="${relatedArticles.analysis}">See a full analysis here.</a></p>
+        </div>
+        <div class="news-extension-sidebar-panel-top-text card-container">
             <p>You'll find the same information from Alternative Tabloids below.<br/></p>
-            <p><a style="text-decoration: underline; font-weight: 500;" href="https://www.reddit.com/r/politics/wiki/whitelist">Our filtering criteris can be found here.</a></p>
+            <p><a target="_blank" style="text-decoration: underline; font-weight: 500;" href="https://www.reddit.com/r/politics/wiki/whitelist">Our filtering criteris can be found here.</a></p>
         </div>
         `
         sidebarPanel.appendChild(sidebarPanelTopContent);
@@ -76,7 +78,7 @@ $(function(){
           var sidebarPanel = document.getElementsByClassName("newsextensionSidebarPanel")[0];
           var div = document.createElement("div");
           div.innerHTML = `
-            <div class="article-container">
+            <div class="article-container card-container">
             <a href="${relatedArticles.articles[i].url}" target="_blank">
                 <div class="article-data-left">
                     <div class="source article-meta">
@@ -108,6 +110,7 @@ $(function(){
         margin: 10px;
         font-weight: bold;
         text-align: center;
+        padding: 5px 0;
     }
     .news-extension-sidebar-panel-top-text p {
        margin: 0.5em;
@@ -119,13 +122,15 @@ $(function(){
         background: #eee;
         height: 100vh;
     }
-    .article-container {
-        height: 120px;
+    .card-container {
         background-color: white;
         margin: 5px;
         border-radius: 5px;
         box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
         overflow: hidden;
+    }
+    .article-container {
+        height: 120px;
     }
     .article-container p {
         margin: 0.2em;
@@ -160,6 +165,7 @@ $(function(){
             margin: 10px;
             font-weight: bold;
             text-align: center;
+            padding: 5px 0;
         }
         .news-extension-sidebar-panel-top-text p {
             margin: 0.5em;
@@ -171,13 +177,15 @@ $(function(){
             background: #eee;
             height: 100vh;
         }
-        .article-container {
-            height: 120px;
+        .card-container {
             background-color: white;
             margin: 5px;
             border-radius: 5px;
             box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
             overflow: hidden;
+        }
+        .article-container {
+            height: 120px;
         }
         .article-container p {
             margin: 0.2em;
