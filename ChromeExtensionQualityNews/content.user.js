@@ -10,42 +10,11 @@
 // ==/UserScript==
 
 $(document).ready(function() {
-    var newsextensionSidebarPanel = document.createElement('div');
-    newsextensionSidebarPanel.className = 'newsextensionSidebarPanel';
+    if (window.parent != window.top) {
+        return;
+    }
 
-    var arrow = document.createElement('a');
-    arrow.href = 'javascript:void(0);'
-    arrow.className = 'news-extension-sidebar-panel-slider-arrow show';
-    arrow.innerHTML = '&raquo;'
 
-    $("body").prepend( newsextensionSidebarPanel );
-    $("body").prepend( arrow );
-
-    $('.newsextensionSidebarPanel').css({'font-family': '"Merriweather Sans", sans-serif', 'font-size': '14px', 'z-index': '999999', 'width':'300px', 'float':'left', 'height':'100%', 'background':'white', 'position':'absolute', 'left':'-300px'})
-    $('.news-extension-sidebar-panel-slider-arrow').css({ 'box-sizing': 'border-box', 'z-index': '999999', 'padding':'4px 4px 4px 17px', 'width':'50px', 'height':'50px', 'border-radius': '25px', 'margin': '5px', 'float':'left', 'background':'black','font':'400 32px Arial, Helvetica, sans-serif', 'color':'white','text-decoration':'none', 'position':'absolute'})
-});
-
-$(function(){
-    $('.news-extension-sidebar-panel-slider-arrow').click(function(){
-        if($(this).hasClass('show')){
-        $( ".news-extension-sidebar-panel-slider-arrow, .newsextensionSidebarPanel" ).animate({
-          left: "+=300"
-          }, 700, function() {
-            // Animation complete.
-          });
-          $(this).html('&laquo;').removeClass('show').addClass('hide');
-        }
-        else {
-        $( ".news-extension-sidebar-panel-slider-arrow, .newsextensionSidebarPanel" ).animate({
-          left: "-=300"
-          }, 700, function() {
-            // Animation complete.
-          });
-          $(this).html('&raquo;').removeClass('hide').addClass('show');
-        }
-    });
-
-    // Jeromes code starts here I think
     function httpGetAsync(theUrl, callback) {
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function() { 
@@ -55,8 +24,7 @@ $(function(){
         xmlHttp.open("GET", theUrl, true); // true for asynchronous 
         xmlHttp.send(null);
     }
-    var apiurl = `https://related-news-extension-api.herokuapp.com/?q=${window.location.href}`
-    console.log(apiurl);
+    
 
     function loopArticles(responseText) {
         var relatedArticles = JSON.parse(responseText);
@@ -100,7 +68,48 @@ $(function(){
           sidebarPanel.appendChild(div);
         }
     }
-    var relatedArticles = httpGetAsync(apiurl, loopArticles);
+
+    var apiurl = `https://related-news-extension-api.herokuapp.com/?q=$ {window.location.href}`
+    httpGetAsync(apiurl, loopArticles);
+
+
+    var newsextensionSidebarPanel = document.createElement('div');
+    newsextensionSidebarPanel.className = 'newsextensionSidebarPanel';
+
+    var arrow = document.createElement('a');
+    arrow.href = 'javascript:void(0);'
+    arrow.className = 'news-extension-sidebar-panel-slider-arrow show';
+    arrow.innerHTML = '&raquo;'
+
+    $("body").prepend( newsextensionSidebarPanel );
+    $("body").prepend( arrow );
+
+    $('.newsextensionSidebarPanel').css({'font-family': '"Merriweather Sans", sans-serif', 'font-size': '14px', 'z-index': '999999', 'width':'300px', 'float':'left', 'height':'100%', 'background':'white', 'position':'absolute', 'left':'-300px'})
+    $('.news-extension-sidebar-panel-slider-arrow').css({ 'box-sizing': 'border-box', 'z-index': '999999', 'padding':'4px 4px 4px 17px', 'width':'50px', 'height':'50px', 'border-radius': '25px', 'margin': '5px', 'float':'left', 'background':'black','font':'400 32px Arial, Helvetica, sans-serif', 'color':'white','text-decoration':'none', 'position':'absolute'})
+});
+
+$(function(){
+    $('.news-extension-sidebar-panel-slider-arrow').click(function(){
+        if($(this).hasClass('show')){
+        $( ".news-extension-sidebar-panel-slider-arrow, .newsextensionSidebarPanel" ).animate({
+          left: "+=300"
+          }, 700, function() {
+            // Animation complete.
+          });
+          $(this).html('&laquo;').removeClass('show').addClass('hide');
+        }
+        else {
+        $( ".news-extension-sidebar-panel-slider-arrow, .newsextensionSidebarPanel" ).animate({
+          left: "-=300"
+          }, 700, function() {
+            // Animation complete.
+          });
+          $(this).html('&raquo;').removeClass('hide').addClass('show');
+        }
+    });
+
+
+    
 
     var style=document.createElement('style');
     style.type='text/css';
