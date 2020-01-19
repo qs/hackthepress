@@ -10,25 +10,25 @@
 // ==/UserScript==
 
 $(document).ready(function() {
-    var panel = document.createElement('div');
-    panel.className = 'panel';
+    var newsextensionSidebarPanel = document.createElement('div');
+    newsextensionSidebarPanel.className = 'newsextensionSidebarPanel';
 
     var arrow = document.createElement('a');
     arrow.href = 'javascript:void(0);'
-    arrow.className = 'slider-arrow show';
+    arrow.className = 'news-extension-sidebar-panel-slider-arrow show';
     arrow.innerHTML = '&raquo;'
 
-    $("body").prepend( panel );
+    $("body").prepend( newsextensionSidebarPanel );
     $("body").prepend( arrow );
 
-    $('.panel').css({'z-index': '999999', 'width':'300px', 'float':'left', 'height':'100%', 'background':'#d9dada','position':'absolute', 'left':'-300px'})
-    $('.slider-arrow').css({'z-index': '999999', 'padding':'5px', 'width':'50px', 'height':'50px', 'float':'left', 'background':'#d9dada','font':'400 32px Arial, Helvetica, sans-serif', 'color':'#000','text-decoration':'none', 'position':'absolute'})
+    $('.newsextensionSidebarPanel').css({'z-index': '999999', 'width':'300px', 'float':'left', 'height':'100%', 'background':'#d9dada','position':'absolute', 'left':'-300px'})
+    $('.news-extension-sidebar-panel-slider-arrow').css({'z-index': '999999', 'padding':'5px', 'width':'50px', 'height':'50px', 'float':'left', 'background':'#d9dada','font':'400 32px Arial, Helvetica, sans-serif', 'color':'#000','text-decoration':'none', 'position':'absolute'})
 });
 
 $(function(){
-	$('.slider-arrow').click(function(){
+	$('.news-extension-sidebar-panel-slider-arrow').click(function(){
         if($(this).hasClass('show')){
-	    $( ".slider-arrow, .panel" ).animate({
+	    $( ".news-extension-sidebar-panel-slider-arrow, .newsextensionSidebarPanel" ).animate({
           left: "+=300"
 		  }, 700, function() {
             // Animation complete.
@@ -36,7 +36,7 @@ $(function(){
 		  $(this).html('&laquo;').removeClass('show').addClass('hide');
         }
         else {
-	    $( ".slider-arrow, .panel" ).animate({
+	    $( ".news-extension-sidebar-panel-slider-arrow, .newsextensionSidebarPanel" ).animate({
           left: "-=300"
 		  }, 700, function() {
             // Animation complete.
@@ -45,9 +45,7 @@ $(function(){
         }
     });
 
-});
-
-
+    // Jeromes code starts here I think
     function httpGetAsync(theUrl, callback) {
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function() { 
@@ -57,32 +55,34 @@ $(function(){
         xmlHttp.open("GET", theUrl, true); // true for asynchronous 
         xmlHttp.send(null);
     }
-    var apiurl = "https://related-news-extension-api.herokuapp.com/?q=https://www.theguardian.com/politics/2020/jan/18/long-bailey-we-must-become-salespeople-for-socialism"
+    var apiurl = `https://related-news-extension-api.herokuapp.com/?q=${window.location.href}`
+    console.log(apiurl);
 
     function loopArticles(responseText) {
         var relatedArticles = JSON.parse(responseText);
         console.log(relatedArticles);
-        for (var i = 0; i < relatedArticles.length; i++) {
-          console.log(relatedArticles[i]);
-          var sidebarPanel = document.getElementsByClassName("panel")[0];
+        for (var i = 0; i < relatedArticles.articles.length; i++) {
+          var sidebarPanel = document.getElementsByClassName("newsextensionSidebarPanel")[0];
           var div = document.createElement("div");
           div.innerHTML = `
             <div class="article-container">
+            <a href="${relatedArticles.articles[i].url}" target="_blank">
                 <div class="article-data-left">
                     <div class="source article-meta">
-                        <p>From <span class="publication">${relatedArticles[i].source.name}</span></p>
+                        <p>From <span class="publication">${relatedArticles.articles[i].source.name}</span></p>
                     </div>
                     <div class="article-title">
                         <!-- Need to limit the number of characters in the headline -->
-                        <p class="article-title-text">${relatedArticles[i].title}</p>
+                        <p class="article-title-text">${relatedArticles.articles[i].title.substring(0,60)+"..."}</p>
                     </div>
                     <div class="article-date article-meta">
-                        <p>${relatedArticles[i].publishedAt} hours ago //TODO</p>
+                        <p>${relatedArticles.articles[i].displayDate}</p>
                     </div>
                 </div>
                 <div class="article-image-right">
-                    <img src="${relatedArticles[i].urlToImage}" alt="">
+                    <img src="${relatedArticles.articles[i].urlToImage}" alt="">
                 </div>
+            </a>
             </div>`
           sidebarPanel.appendChild(div);
         }
@@ -90,6 +90,26 @@ $(function(){
     var relatedArticles = httpGetAsync(apiurl, loopArticles);
 
 
+        // var tempDiv.innerHTML = `
+        //     <div class="article-container">
+        //         <div class="article-data-left">
+        //             <div class="source article-meta">
+        //                 <p>From <span class="publication">Independent</span></p>
+        //             </div>
+        //             <div class="article-title">
+        //                 <!-- Need to limit the number of characters in the headline -->
+        //                 <p class="article-title-text">Labour leadership: Jess Phillips and Rebecca Long Bailey clash</p>
+        //             </div>
+        //             <div class="article-date article-meta">
+        //                 <p>3 hours ago //TODO</p>
+        //             </div>
+        //         </div>
+        //         <div class="article-image-right">
+        //             <img src="//www.thetimes.co.uk/imageserver/image/methode%2Fsundaytimes%2Fprod%2Fweb%2Fbin%2F10d4cdca-3a1b-11ea-9741-875f0512cf29.jpg?crop=2667%2C1500%2C0%2C0&resize=320 320w, //www.thetimes.co.uk/imageserver/image/methode%2Fsundaytimes%2Fprod%2Fweb%2Fbin%2F10d4cdca-3a1b-11ea-9741-875f0512cf29.jpg?crop=2667%2C1500%2C0%2C0&resize=685 685w, //www.thetimes.co.uk/imageserver/image/methode%2Fsundaytimes%2Fprod%2Fweb%2Fbin%2F10d4cdca-3a1b-11ea-9741-875f0512cf29.jpg?crop=2667%2C1500%2C0%2C0&resize=1200 1200w, //www.thetimes.co.uk/imageserver/image/methode%2Fsundaytimes%2Fprod%2Fweb%2Fbin%2F10d4cdca-3a1b-11ea-9741-875f0512cf29.jpg?crop=2667%2C1500%2C0%2C0&resize=2400 2400w" alt="">
+        //         </div>
+        //     </div>`
+        // var sidebarPanel = document.getElementsByClassName("newsextensionSidebarPanel")[0];
+        // sidebarPanel.appendChild(tempDiv);
 
 
     var style=document.createElement('style');
@@ -104,7 +124,7 @@ $(function(){
         height: 100vh;
     }
     .article-container {
-        height: 130px;
+        height: 120px;
         background-color: white;
         margin: 5px;
         border-radius: 5px;
@@ -115,14 +135,14 @@ $(function(){
         overflow: hidden;
     }
     .article-container p {
-        margin: 0.5em;
+        margin: 0.2em;
     }
     .article-meta {
         font-size: 0.8em;
         opacity: 0.7;
     }
     .article-data-left {
-        width: calc(70% - 10px);
+        width: 65%;
         float: left;
         padding: 5px;
     }
@@ -131,7 +151,7 @@ $(function(){
     }
 
     .article-image-right {
-        width: 30%;
+        width: 35%;
         height: 100%;
         float: left;
         overflow: hidden;
@@ -139,7 +159,6 @@ $(function(){
     .article-image-right > img {
         height: 100%;
         object-fit: cover;
-        object-position: 50% 50%; /* JMTODO: Make this work */
     }
     `;
     }else{
@@ -152,7 +171,7 @@ $(function(){
             height: 100vh;
         }
         .article-container {
-            height: 130px;
+            height: 120px;
             background-color: white;
             margin: 5px;
             border-radius: 5px;
@@ -163,14 +182,14 @@ $(function(){
             overflow: hidden;
         }
         .article-container p {
-            margin: 0.5em;
+            margin: 0.2em;
         }
         .article-meta {
             font-size: 0.8em;
             opacity: 0.7;
         }
         .article-data-left {
-            width: calc(70% - 10px);
+            width: 65%;
             float: left;
             padding: 5px;
         }
@@ -179,7 +198,7 @@ $(function(){
         }
 
         .article-image-right {
-            width: 30%;
+            width: 35%;
             height: 100%;
             float: left;
             overflow: hidden;
@@ -187,8 +206,14 @@ $(function(){
         .article-image-right > img {
             height: 100%;
             object-fit: cover;
-            object-position: 50% 50%; /* JMTODO: Make this work */
         }
         `));
     }
     document.getElementsByTagName('head')[0].appendChild(style);
+    // end
+
+
+
+});
+
+
