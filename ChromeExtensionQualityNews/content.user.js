@@ -21,27 +21,27 @@ $(document).ready(function() {
     $("body").prepend( newsextensionSidebarPanel );
     $("body").prepend( arrow );
 
-    $('.newsextensionSidebarPanel').css({'z-index': '999999', 'width':'300px', 'float':'left', 'height':'100%', 'background':'white', 'position':'absolute', 'left':'-300px'})
-    $('.news-extension-sidebar-panel-slider-arrow').css({'z-index': '999999', 'padding':'4px 4px 4px 17px', 'width':'50px', 'height':'50px', 'border-radius': '25px', 'margin': '5px', 'float':'left', 'background':'black','font':'400 32px Arial, Helvetica, sans-serif', 'color':'white','text-decoration':'none', 'position':'absolute'})
+    $('.newsextensionSidebarPanel').css({'font-family': '"Merriweather Sans", sans-serif', 'z-index': '999999', 'width':'300px', 'float':'left', 'height':'100%', 'background':'white', 'position':'absolute', 'left':'-300px'})
+    $('.news-extension-sidebar-panel-slider-arrow').css({ 'box-sizing': 'border-box', 'z-index': '999999', 'padding':'4px 4px 4px 17px', 'width':'50px', 'height':'50px', 'border-radius': '25px', 'margin': '5px', 'float':'left', 'background':'black','font':'400 32px Arial, Helvetica, sans-serif', 'color':'white','text-decoration':'none', 'position':'absolute'})
 });
 
 $(function(){
-	$('.news-extension-sidebar-panel-slider-arrow').click(function(){
+    $('.news-extension-sidebar-panel-slider-arrow').click(function(){
         if($(this).hasClass('show')){
-	    $( ".news-extension-sidebar-panel-slider-arrow, .newsextensionSidebarPanel" ).animate({
+        $( ".news-extension-sidebar-panel-slider-arrow, .newsextensionSidebarPanel" ).animate({
           left: "+=300"
-		  }, 700, function() {
+          }, 700, function() {
             // Animation complete.
           });
-		  $(this).html('&laquo;').removeClass('show').addClass('hide');
+          $(this).html('&laquo;').removeClass('show').addClass('hide');
         }
         else {
-	    $( ".news-extension-sidebar-panel-slider-arrow, .newsextensionSidebarPanel" ).animate({
+        $( ".news-extension-sidebar-panel-slider-arrow, .newsextensionSidebarPanel" ).animate({
           left: "-=300"
-		  }, 700, function() {
+          }, 700, function() {
             // Animation complete.
           });
-		  $(this).html('&raquo;').removeClass('hide').addClass('show');
+          $(this).html('&raquo;').removeClass('hide').addClass('show');
         }
     });
 
@@ -60,7 +60,18 @@ $(function(){
 
     function loopArticles(responseText) {
         var relatedArticles = JSON.parse(responseText);
-        console.log(relatedArticles);
+
+        var sidebarPanel = document.getElementsByClassName("newsextensionSidebarPanel")[0];
+        var sidebarPanelTopContent = document.createElement("div");
+        sidebarPanelTopContent.innerHTML = `
+        <div class="news-extension-sidebar-panel-top-text">
+            <p>The article you're reading has <br/><span style="//background-color: #e67e22;"> ${relatedArticles.warnings} quality warnings</span><br/> according to Glitched.News</p>
+            <p><a style="text-decoration: underline; font-weight: 500;" href="${relatedArticles.analysis}">See a full analysis here.</a></p>
+            <p>You'll find the same information from Alternative Tabloids below.<br/></p>
+            <p><a style="text-decoration: underline; font-weight: 500;" href="https://www.reddit.com/r/politics/wiki/whitelist">Our filtering criteris can be found here.</a></p>
+        </div>
+        `
+        sidebarPanel.appendChild(sidebarPanelTopContent);
         for (var i = 0; i < relatedArticles.articles.length; i++) {
           var sidebarPanel = document.getElementsByClassName("newsextensionSidebarPanel")[0];
           var div = document.createElement("div");
@@ -89,34 +100,19 @@ $(function(){
     }
     var relatedArticles = httpGetAsync(apiurl, loopArticles);
 
-
-        // var tempDiv.innerHTML = `
-        //     <div class="article-container">
-        //         <div class="article-data-left">
-        //             <div class="source article-meta">
-        //                 <p>From <span class="publication">Independent</span></p>
-        //             </div>
-        //             <div class="article-title">
-        //                 <!-- Need to limit the number of characters in the headline -->
-        //                 <p class="article-title-text">Labour leadership: Jess Phillips and Rebecca Long Bailey clash</p>
-        //             </div>
-        //             <div class="article-date article-meta">
-        //                 <p>3 hours ago //TODO</p>
-        //             </div>
-        //         </div>
-        //         <div class="article-image-right">
-        //             <img src="//www.thetimes.co.uk/imageserver/image/methode%2Fsundaytimes%2Fprod%2Fweb%2Fbin%2F10d4cdca-3a1b-11ea-9741-875f0512cf29.jpg?crop=2667%2C1500%2C0%2C0&resize=320 320w, //www.thetimes.co.uk/imageserver/image/methode%2Fsundaytimes%2Fprod%2Fweb%2Fbin%2F10d4cdca-3a1b-11ea-9741-875f0512cf29.jpg?crop=2667%2C1500%2C0%2C0&resize=685 685w, //www.thetimes.co.uk/imageserver/image/methode%2Fsundaytimes%2Fprod%2Fweb%2Fbin%2F10d4cdca-3a1b-11ea-9741-875f0512cf29.jpg?crop=2667%2C1500%2C0%2C0&resize=1200 1200w, //www.thetimes.co.uk/imageserver/image/methode%2Fsundaytimes%2Fprod%2Fweb%2Fbin%2F10d4cdca-3a1b-11ea-9741-875f0512cf29.jpg?crop=2667%2C1500%2C0%2C0&resize=2400 2400w" alt="">
-        //         </div>
-        //     </div>`
-        // var sidebarPanel = document.getElementsByClassName("newsextensionSidebarPanel")[0];
-        // sidebarPanel.appendChild(tempDiv);
-
-
     var style=document.createElement('style');
     style.type='text/css';
     if(style.styleSheet){
         style.styleSheet.cssText=`
-      .wrapper {
+    .news-extension-sidebar-panel-top-text {
+        margin: 10px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .news-extension-sidebar-panel-top-text p {
+       margin: 0.5em;
+    }
+    .wrapper {
         width: 400px;
         margin: auto;
         padding-top: 5px;
@@ -129,7 +125,6 @@ $(function(){
         margin: 5px;
         border-radius: 5px;
         box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
-        font-family: "Merriweather Sans", sans-serif;
         overflow: hidden;
     }
     .article-container p {
@@ -161,6 +156,14 @@ $(function(){
     `;
     }else{
         style.appendChild(document.createTextNode(`
+        .news-extension-sidebar-panel-top-text {
+            margin: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .news-extension-sidebar-panel-top-text p {
+            margin: 0.5em;
+        }
         .wrapper {
             width: 400px;
             margin: auto;
@@ -174,7 +177,6 @@ $(function(){
             margin: 5px;
             border-radius: 5px;
             box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
-            font-family: "Merriweather Sans", sans-serif;
             overflow: hidden;
         }
         .article-container p {
